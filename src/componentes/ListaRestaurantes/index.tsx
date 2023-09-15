@@ -4,6 +4,7 @@ import style from './ListaRestaurantes.module.scss';
 import Restaurante from './Restaurante';
 import axios from 'axios';
 import { IPaginacao } from '../../interfaces/IPaginacao';
+import { TextField } from '@mui/material';
 
 // const restaurantes: IRestaurante[] = [
 //   {
@@ -94,6 +95,15 @@ const ListaRestaurantes = () => {
   const [restaurantes, setRestaurantes] = useState<IRestaurante[]>([])
   const [proximaPagina, setProximaPagina] = useState('')
   const [paginaAnterior, setPaginaAnterior] = useState('')
+  const [busca, setBusca] = useState('')
+
+  const restaurantesFiltro = restaurantes.filter((restaurante) => {
+      const regex = new RegExp(busca, "i");
+
+      return restaurante.nome.match(regex);
+    })
+  
+
 
   const carregaDados = (url: string) => {
      axios
@@ -113,26 +123,22 @@ const ListaRestaurantes = () => {
     carregaDados("http://localhost:8000/api/v1/restaurantes/");
   }, [])
 
-  // const verMais = () => {
-  //   axios
-  //     .get<IPaginacao<IRestaurante>>(proximaPagina)
-  //     .then((res) => {
-  //       setRestaurantes([...restaurantes, ...res.data.results]);
-  //       console.log(res.data);
-        
-  //       setProximaPagina(res.data.next);
-  //     })
-  //     .catch((erro) => {
-  //       console.log(erro);
-  //     });
-  // }
-
+  
   return (
     <section className={style.ListaRestaurantes}>
       <h1>
         Os restaurantes mais <em>bacanas</em>!
       </h1>
-      {restaurantes?.map((item) => (
+
+      <TextField
+        id="outlined-basic"
+        label="Pesquisar"
+        variant="outlined"
+        value={busca}
+        onChange={(e) => setBusca(e.target.value)}
+      />
+
+      {restaurantesFiltro?.map((item) => (
         <Restaurante restaurante={item} key={item.id} />
       ))}
 
