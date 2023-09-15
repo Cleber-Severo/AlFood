@@ -111,6 +111,8 @@ const ListaRestaurantes = () => {
       .get<IPaginacao<IRestaurante>>(proximaPagina)
       .then((res) => {
         setRestaurantes([...restaurantes, ...res.data.results]);
+        console.log(res.data);
+        
         setProximaPagina(res.data.next);
       })
       .catch((erro) => {
