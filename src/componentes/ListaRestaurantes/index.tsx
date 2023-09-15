@@ -93,40 +93,67 @@ import { IPaginacao } from '../../interfaces/IPaginacao';
 const ListaRestaurantes = () => {
   const [restaurantes, setRestaurantes] = useState<IRestaurante[]>([])
   const [proximaPagina, setProximaPagina] = useState('')
+  const [paginaAnterior, setPaginaAnterior] = useState('')
+
+  const carregaDados = (url: string) => {
+     axios
+       .get<IPaginacao<IRestaurante>>(url)
+       .then((res) => {
+         setRestaurantes(res.data.results);
+         setProximaPagina(res.data.next);
+         setPaginaAnterior(res.data.previous);
+       })
+       .catch((erro) => {
+         console.log(erro);
+       });
+  }
 
   useEffect(() => {
     //obter restaurantes
-    axios.get<IPaginacao<IRestaurante>>('http://localhost:8000/api/v1/restaurantes/')
-    .then( res => {
-      setRestaurantes(res.data.results);
-      setProximaPagina(res.data.next);
-    }).catch(erro => {
-      console.log(erro);
-    })
-
+    carregaDados("http://localhost:8000/api/v1/restaurantes/");
   }, [])
 
-  const verMais = () => {
-    axios
-      .get<IPaginacao<IRestaurante>>(proximaPagina)
-      .then((res) => {
-        setRestaurantes([...restaurantes, ...res.data.results]);
-        console.log(res.data);
+  // const verMais = () => {
+  //   axios
+  //     .get<IPaginacao<IRestaurante>>(proximaPagina)
+  //     .then((res) => {
+  //       setRestaurantes([...restaurantes, ...res.data.results]);
+  //       console.log(res.data);
         
-        setProximaPagina(res.data.next);
-      })
-      .catch((erro) => {
-        console.log(erro);
-      });
-  }
+  //       setProximaPagina(res.data.next);
+  //     })
+  //     .catch((erro) => {
+  //       console.log(erro);
+  //     });
+  // }
 
-  return (<section className={style.ListaRestaurantes}>
-    <h1>Os restaurantes mais <em>bacanas</em>!</h1>
-    {restaurantes?.map(item => <Restaurante restaurante={item} key={item.id} />)}
-    {proximaPagina && <button onClick={verMais}>
-        ver mais
-      </button>}
-  </section>)
+  return (
+    <section className={style.ListaRestaurantes}>
+      <h1>
+        Os restaurantes mais <em>bacanas</em>!
+      </h1>
+      {restaurantes?.map((item) => (
+        <Restaurante restaurante={item} key={item.id} />
+      ))}
+
+      {
+        <button
+          onClick={() => carregaDados(paginaAnterior)}
+          disabled={!paginaAnterior}
+        >
+          Página anterior
+        </button>
+      }
+      {
+        <button
+          onClick={() => carregaDados(proximaPagina)}
+          disabled={!proximaPagina}
+        >
+          Próxima página
+        </button>
+      }
+    </section>
+  );
 }
 
 export default ListaRestaurantes
