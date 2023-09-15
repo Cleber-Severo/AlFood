@@ -17,7 +17,7 @@ export default function AdministracaoRestaurantes() {
     useEffect(() => {
         axios.get<IRestaurante[]>('http://localhost:8000/api/v2/restaurantes/')
         .then( res => setRestaurantes(res.data))
-    })
+    }, [])
   return (
     <TableContainer component={Paper}>
       <Table>
