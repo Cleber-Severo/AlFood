@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { TextField, Button } from "@mui/material";
+import { TextField, Button, Typography, Box } from "@mui/material";
 import { useParams } from "react-router-dom";
 import IRestaurante from "../../../interfaces/IRestaurante";
 
@@ -42,17 +42,24 @@ export default function FormularioRestaurante() {
   };
 
   return (
-    <form onSubmit={aoSubmeterFomr}>
-      <TextField
-        value={nomeRestaurante}
-        onChange={(event) => setNomeRestaurante(event.target.value)}
-        id="standard-basic"
-        label="Nome do Restaurante"
-        variant="standard"
-      />
-      <Button type="submit" variant="outlined">
-        Salvar
-      </Button>
-    </form>
+    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+      <Typography component={"h1"} variant="h6">
+        Formulário de Restaurantes
+      </Typography>
+      <Box component={'form'} onSubmit={aoSubmeterFomr}>
+        <TextField
+          value={nomeRestaurante}
+          onChange={(event) => setNomeRestaurante(event.target.value)}
+          id="standard-basic"
+          label="Nome do Restaurante"
+          variant="standard"
+          fullWidth
+          required
+        />
+        <Button sx={{marginTop: 1}} type="submit" fullWidth variant="outlined">
+          Salvar
+        </Button>
+      </Box>
+    </Box>
   );
 }
